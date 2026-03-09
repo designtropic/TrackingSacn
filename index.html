@@ -1166,6 +1166,105 @@ body {
   overflow-x: auto;
 }
 
+/* Conteneur principal pour le centrage */
+.toggle-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 25px 0;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* Le châssis du toggle */
+.toggle-container {
+  position: relative;
+  display: flex;
+  background: rgba(226, 232, 240, 0.8); /* Gris doux légèrement transparent */
+  backdrop-filter: blur(8px); /* Effet de flou si le fond est coloré */
+  border-radius: 14px;
+  padding: 5px;
+  width: 360px; /* Un peu plus large pour le confort */
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05), inset 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* On cache les radios natifs */
+.toggle-container input {
+  display: none;
+}
+
+/* Style des étiquettes (les boutons) */
+.toggle-container label {
+  flex: 1;
+  padding: 12px 0;
+  text-align: center;
+  z-index: 2; /* Pour passer au-dessus du slider */
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  color: #64748b; /* Couleur de texte inactive */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+}
+
+/* Le curseur flottant (Le Slider) */
+.toggle-slider {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width: calc(33.33% - 7px); /* Largeur dynamique pour 3 colonnes */
+  height: calc(100% - 10px);
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15), 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); /* Effet rebond élastique */
+  z-index: 1;
+}
+
+/* --- LOGIQUE DES POSITIONS --- */
+
+/* Position 1 : All */
+#toggle-all:checked ~ .toggle-slider {
+  transform: translateX(0);
+}
+
+/* Position 2 : Collection */
+#toggle-collection:checked ~ .toggle-slider {
+  transform: translateX(100%);
+}
+
+/* Position 3 : Production */
+#toggle-production:checked ~ .toggle-slider {
+  transform: translateX(200%);
+}
+
+/* --- ETATS ACTIFS (Texte) --- */
+
+/* Couleur du texte quand sélectionné */
+#toggle-all:checked ~ label[for="toggle-all"],
+#toggle-collection:checked ~ label[for="toggle-collection"],
+#toggle-production:checked ~ label[for="toggle-production"] {
+  color: #2563eb; /* Bleu électrique moderne */
+  transform: scale(1.05); /* Léger grossissement pour le feedback */
+}
+
+/* Petit effet de survol sur les options non-actives */
+.toggle-container label:hover {
+  color: #475569;
+}
+
+/* Responsive : On réduit un peu la taille sur mobile */
+@media (max-width: 480px) {
+  .toggle-container {
+    width: 95%;
+    max-width: 320px;
+  }
+  .toggle-container label {
+    font-size: 13px;
+    padding: 10px 0;
+  }
+}
+
 /* pitch mobile */
 
 @media (max-width: 600px) {
@@ -1428,13 +1527,21 @@ body {
   </div>
 
   <div class="sidebar-menu">
-      <a href="https://design-database-kappa.vercel.app" class="sidebar-item primary" style="text-decoration: none;">
+    <a href="https://inventory-design-psi.vercel.app/" class="sidebar-item primary" style="text-decoration: none;">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <circle cx="12" cy="12" r="10"></circle>
       <line x1="12" y1="8" x2="12" y2="16"></line>
       <line x1="8" y1="12" x2="16" y2="12"></line>
     </svg>
-    <span>Add Item</span>
+    <span>Add Item Collection</span>
+  </a>
+    <a href="https://designdatabase2.vercel.app/" class="sidebar-item primary" style="text-decoration: none;">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="12" y1="8" x2="12" y2="16"></line>
+      <line x1="8" y1="12" x2="16" y2="12"></line>
+    </svg>
+    <span>Add Item Production</span>
   </a>
     <div class="sidebar-item danger" onclick="logout()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1465,6 +1572,65 @@ body {
       <div class="scan-info">
         <p class="scan-text">Scan QR or search S-Number</p>
       </div>
+    </div>
+
+     <div style="margin-bottom: 24px;">
+      <div class="sheet-selector-container" style="
+        display: flex;
+        background: #f1f5f9;
+        padding: 4px;
+        border-radius: 14px;
+        position: relative;
+        border: 1px solid #cbd5e1;
+        box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05);
+      ">
+        <!-- Le curseur est maintenant NOIR -->
+        <div id="slider-highlight2" style="
+          position: absolute;
+          width: calc(50% - 4px);
+          height: calc(100% - 8px);
+          background: #000000; /* Fond noir pour la sélection */
+          border-radius: 10px;
+          transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          left: 4px;
+          z-index: 1;
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+          transform: translateX(0);
+        "></div>
+        
+        <button onclick="toggleSheet2('Collection')" id="btn-col2" style="
+          flex: 1;
+          padding: 12px;
+          border: none;
+          background: transparent;
+          position: relative;
+          z-index: 2;
+          font-weight: 800;
+          color: #ffffff; /* Blanc car sélectionné par défaut */
+          cursor: pointer;
+          transition: color 0.3s;
+          text-transform: uppercase;
+          font-size: 13px;
+          letter-spacing: 0.5px;
+        ">Collection</button>
+        
+        <button onclick="toggleSheet2('Production')" id="btn-prod2" style="
+          flex: 1;
+          padding: 12px;
+          border: none;
+          background: transparent;
+          position: relative;
+          z-index: 2;
+          font-weight: 800;
+          color: #64748b; /* Gris car inactif */
+          cursor: pointer;
+          transition: color 0.3s;
+          text-transform: uppercase;
+          font-size: 13px;
+          letter-spacing: 0.5px;
+        ">Production</button>
+      </div>
+      <input type="hidden" id="selected-sheet-input2" value="Sheet1">
     </div>
     
     <!-- SEARCH S-NUMBER -->
@@ -1615,6 +1781,66 @@ body {
         <p class="scan-count">Scanned: <span id="checkout-count">0</span></p>
       </div>
     </div>
+
+    <!-- --- DÉBUT DU SLIDER DE SÉLECTION INVERSÉ (Noir & Blanc) --- -->
+    <div style="margin-bottom: 24px;">
+      <div class="sheet-selector-container" style="
+        display: flex;
+        background: #f1f5f9;
+        padding: 4px;
+        border-radius: 14px;
+        position: relative;
+        border: 1px solid #cbd5e1;
+        box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05);
+      ">
+        <!-- Le curseur est maintenant NOIR -->
+        <div id="slider-highlight" style="
+          position: absolute;
+          width: calc(50% - 4px);
+          height: calc(100% - 8px);
+          background: #000000; /* Fond noir pour la sélection */
+          border-radius: 10px;
+          transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          left: 4px;
+          z-index: 1;
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+          transform: translateX(0);
+        "></div>
+        
+        <button onclick="toggleSheet('Collection')" id="btn-col" style="
+          flex: 1;
+          padding: 12px;
+          border: none;
+          background: transparent;
+          position: relative;
+          z-index: 2;
+          font-weight: 800;
+          color: #ffffff; /* Blanc car sélectionné par défaut */
+          cursor: pointer;
+          transition: color 0.3s;
+          text-transform: uppercase;
+          font-size: 13px;
+          letter-spacing: 0.5px;
+        ">Collection</button>
+        
+        <button onclick="toggleSheet('Production')" id="btn-prod" style="
+          flex: 1;
+          padding: 12px;
+          border: none;
+          background: transparent;
+          position: relative;
+          z-index: 2;
+          font-weight: 800;
+          color: #64748b; /* Gris car inactif */
+          cursor: pointer;
+          transition: color 0.3s;
+          text-transform: uppercase;
+          font-size: 13px;
+          letter-spacing: 0.5px;
+        ">Production</button>
+      </div>
+      <input type="hidden" id="selected-sheet-input" value="Sheet1">
+    </div>
     
     <div style="background: var(--white); border: 2px solid var(--gray-200); border-radius: 20px; padding: 20px; margin-bottom: 24px;">
       <div style="display: flex; gap: 12px;">
@@ -1664,6 +1890,28 @@ body {
       </div>
     </div>
     <div class="form-wrapper">
+  <h2 class="form-title">Customer Information</h2>
+  
+  <div class="form-group">
+    <label class="form-label">Customer Name</label>
+    <input type="text" id="customer-input" class="form-input" placeholder="Enter customer name">
+  </div>
+
+  <!-- <div class="form-group">
+    <label class="form-label">Select data :</label>
+    <div style="display: flex; gap: 30px; margin-top: 10px; align-items: center;">
+      <label style="cursor: pointer; display: flex; align-items: center; gap: 8px;">
+        <input type="checkbox" class="step-checkbox" value="Collection"> Collection
+      </label>
+      <label style="cursor: pointer; display: flex; align-items: center; gap: 8px;">
+        <input type="checkbox" class="step-checkbox" value="Production"> Production
+      </label>
+    </div>
+  </div> -->
+  
+  <button class="btn-submit" onclick="advanceToSelectionScan()">Continue</button>
+</div>
+    <!-- <div class="form-wrapper">
       <h2 class="form-title">Customer Information</h2>
       <div class="form-group">
         <label class="form-label">Customer Name</label>
@@ -1671,7 +1919,7 @@ body {
       </div>
       
       <button class="btn-submit" onclick="advanceToSelectionScan()">Continue</button>
-    </div>
+    </div> -->
   </div>
 </div>
 
@@ -1690,6 +1938,69 @@ body {
       <div class="selection-count-badge" id="selection-count" style=" position: absolute;top: 16px;right: 16px;background:var(--black);color:var(--white);padding:8px 16px;border-radius:20px;font-weight:700;z-index:10;">0</div>
       <div id="selection-qr-reader" style="  width: 100%;max-width: 100%;height: 300px;margin: 0 auto 20px;border-radius: 16px;overflow: hidden;background: var(--gray-50)"></div>
     </div>
+
+
+
+    <!-- --- DÉBUT DU SLIDER DE SÉLECTION INVERSÉ (Noir & Blanc) --- -->
+    <div style="margin-bottom: 24px;">
+      <div class="sheet-selector-container" style="
+        display: flex;
+        background: #f1f5f9;
+        padding: 4px;
+        border-radius: 14px;
+        position: relative;
+        border: 1px solid #cbd5e1;
+        box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05);
+      ">
+        <!-- Le curseur est maintenant NOIR -->
+        <div id="slider-highlight1" style="
+          position: absolute;
+          width: calc(50% - 4px);
+          height: calc(100% - 8px);
+          background: #000000; /* Fond noir pour la sélection */
+          border-radius: 10px;
+          transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          left: 4px;
+          z-index: 1;
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+          transform: translateX(0);
+        "></div>
+        
+        <button onclick="toggleSheet1('Collection')" id="btn-col1" style="
+          flex: 1;
+          padding: 12px;
+          border: none;
+          background: transparent;
+          position: relative;
+          z-index: 2;
+          font-weight: 800;
+          color: #ffffff; /* Blanc car sélectionné par défaut */
+          cursor: pointer;
+          transition: color 0.3s;
+          text-transform: uppercase;
+          font-size: 13px;
+          letter-spacing: 0.5px;
+        ">Collection</button>
+        
+        <button onclick="toggleSheet1('Production')" id="btn-prod1" style="
+          flex: 1;
+          padding: 12px;
+          border: none;
+          background: transparent;
+          position: relative;
+          z-index: 2;
+          font-weight: 800;
+          color: #64748b; /* Gris car inactif */
+          cursor: pointer;
+          transition: color 0.3s;
+          text-transform: uppercase;
+          font-size: 13px;
+          letter-spacing: 0.5px;
+        ">Production</button>
+      </div>
+      <input type="hidden" id="selected-sheet-input1" value="Sheet1">
+    </div>
+
     <!-- search by Snumber -->
         
 <div class="snumber-container">
@@ -1758,6 +2069,67 @@ body {
       </div>
     </div>
     
+    
+    <!-- --- DÉBUT DU SLIDER DE SÉLECTION INVERSÉ (Noir & Blanc) --- -->
+    <div style="margin-bottom: 24px;">
+      <div class="sheet-selector-container" style="
+        display: flex;
+        background: #f1f5f9;
+        padding: 4px;
+        border-radius: 14px;
+        position: relative;
+        border: 1px solid #cbd5e1;
+        box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05);
+      ">
+        <!-- Le curseur est maintenant NOIR -->
+        <div id="slider-highlight3" style="
+          position: absolute;
+          width: calc(50% - 4px);
+          height: calc(100% - 8px);
+          background: #000000; /* Fond noir pour la sélection */
+          border-radius: 10px;
+          transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          left: 4px;
+          z-index: 1;
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+          transform: translateX(0);
+        "></div>
+        
+        <button onclick="toggleSheet3('Collection')" id="btn-col3" style="
+          flex: 1;
+          padding: 12px;
+          border: none;
+          background: transparent;
+          position: relative;
+          z-index: 2;
+          font-weight: 800;
+          color: #ffffff; /* Blanc car sélectionné par défaut */
+          cursor: pointer;
+          transition: color 0.3s;
+          text-transform: uppercase;
+          font-size: 13px;
+          letter-spacing: 0.5px;
+        ">Collection</button>
+        
+        <button onclick="toggleSheet3('Production')" id="btn-prod3" style="
+          flex: 1;
+          padding: 12px;
+          border: none;
+          background: transparent;
+          position: relative;
+          z-index: 2;
+          font-weight: 800;
+          color: #64748b; /* Gris car inactif */
+          cursor: pointer;
+          transition: color 0.3s;
+          text-transform: uppercase;
+          font-size: 13px;
+          letter-spacing: 0.5px;
+        ">Production</button>
+      </div>
+      <input type="hidden" id="selected-sheet-input3" value="Sheet1">
+    </div>
+
     <!-- SEARCH S-NUMBER -->
     <div style="background: var(--white); border: 2px solid var(--gray-200); border-radius: 20px; padding: 20px; margin-bottom: 24px;">
       <div style="display: flex; gap: 12px;">
@@ -1839,6 +2211,12 @@ body {
         </tbody>
       </table>
     </div>
+    <div id="sharepoint-container" style="margin-top: 24px; display: none;">
+      <button id="btn-open-sharepoint" class="btn-primary" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 12px; background: #0078d4; border: none;" onclick="openSharePointLink()">
+        <span style="font-size: 20px;">📂</span>
+        Open SharePoint Folder
+      </button>
+    </div>
   </div>
 </div>
 <!-- ═══════════════════════════════════════════════════════════════
@@ -1850,6 +2228,20 @@ body {
       <button class="btn-back" onclick="goHome()">←</button>
       <div class="nav-title">Pitch Submitted</div>
     </div>
+    <!-- <div class="toggle-wrapper">
+  <div class="toggle-container">
+    <input type="radio" id="toggle-all" name="op-filter" value="All" checked onchange="applyFilters()">
+    <label for="toggle-all">All</label>
+
+    <input type="radio" id="toggle-collection" name="op-filter" value="Collection" onchange="applyFilters()">
+    <label for="toggle-collection">Collection</label>
+
+    <input type="radio" id="toggle-production" name="op-filter" value="Production" onchange="applyFilters()">
+    <label for="toggle-production">Production</label>
+    
+    <div class="toggle-slider"></div>
+  </div>
+</div> -->
     <div class="table-wrapper">
       <table>
         <thead>
@@ -1962,13 +2354,15 @@ let selectionScanner;
 let isSelectionScanning = false;
 let scannedItems = [];
 let selectionItems = [];
-let selectionFormData = { customer: '', date: '' };
+let selectionFormData = { customer: '', date: '', sheetName: ''};
 let selectionPDFUrl = '';
 
 // ✅ DETAILS VARIABLES (AJOUTÉ)
 let detailsScanner;
 let isDetailsScanning = false;
 let currentDetailsData = null;
+let currentSharePointUrl = "";
+
 
 // Pitch
 let allPitchItems = [];
@@ -2129,6 +2523,24 @@ function goHome() {
 // ====================================
 // ✅ CHECK IN COMPLET
 // ====================================
+function toggleSheet2(choice) {
+  const slider = document.getElementById('slider-highlight2');
+  const btnCol = document.getElementById('btn-col2');
+  const btnProd = document.getElementById('btn-prod2');
+  const input2 = document.getElementById('selected-sheet-input2');
+
+  if (choice === 'Production') {
+    slider.style.transform = 'translateX(100%)';
+    btnProd.style.color = '#ffffff'; // Texte blanc sur fond noir
+    btnCol.style.color = '#64748b';  // Texte gris sur fond clair
+    input2.value = 'Production';
+  } else {
+    slider.style.transform = 'translateX(0)';
+    btnCol.style.color = '#ffffff'; // Texte blanc sur fond noir
+    btnProd.style.color = '#64748b'; // Texte gris sur fond clair
+    input2.value = 'Sheet1';
+  }
+}
 function goToCheckIn() {
   currentScannedReference = '';
   checkinNamesData = {};
@@ -2175,10 +2587,12 @@ async function onCheckinScan(decodedText) {
     const spreadsheetId = params.get('id');
     const row = params.get('row');
     
+    const selectedSheet = document.getElementById('selected-sheet-input2').value;
+    console.log("Feuille sélectionnée avant envoi:", selectedSheet);
     if (spreadsheetId && row) {
       scanCooldown = true;
       if (navigator.vibrate) navigator.vibrate(200);
-      await fetchCheckinItemData(spreadsheetId, row);
+      await fetchCheckinItemData(spreadsheetId, row, selectedSheet);
       setTimeout(() => { scanCooldown = false; }, 800);
     } else {
       alert('Invalid QR code');
@@ -2189,11 +2603,11 @@ async function onCheckinScan(decodedText) {
   }
 }
 
-async function fetchCheckinItemData(spreadsheetId, row) {
+async function fetchCheckinItemData(spreadsheetId, row, selectedSheet) {
   showLoader('Loading...');
   
   try {
-    const url = `${API_URL}?apiAction=getItem&id=${spreadsheetId}&row=${row}`;
+    const url = `${API_URL}?apiAction=getItem&id=${spreadsheetId}&row=${row}&sheetName=${encodeURIComponent(selectedSheet)}`;
     const response = await fetch(url);
     const result = await response.json();
     hideLoader();
@@ -2216,7 +2630,7 @@ async function fetchCheckinItemData(spreadsheetId, row) {
 
 async function searchCheckinItem() {
   const sNumber = document.getElementById('checkin-search-input').value.trim();
-  
+    const selectedSheet = document.getElementById('selected-sheet-input2').value;
   if (!sNumber) {
     alert('Please enter S-Number');
     return;
@@ -2225,7 +2639,7 @@ async function searchCheckinItem() {
   showLoader('Searching...');
   
   try {
-    const url = `${API_URL}?apiAction=getItemBySNumber&spreadsheetId=${ARCHIVING_SPREADSHEET_ID}&sNumber=${encodeURIComponent(sNumber)}`;
+    const url = `${API_URL}?apiAction=getItemBySNumber&spreadsheetId=${ARCHIVING_SPREADSHEET_ID}&sNumber=${encodeURIComponent(sNumber)}&sheetName=${selectedSheet}`;
     const response = await fetch(url);
     const result = await response.json();
     hideLoader();
@@ -2420,7 +2834,7 @@ async function saveCheckinAll() {
     
     for (let i = 0; i < toCheckinItems.length; i++) {
       const item = toCheckinItems[i];
-      
+      const selectedSheet = document.getElementById('selected-sheet-input2').value;
       // ✅ NE PAS ENVOYER loginName, l'Apps Script va le récupérer automatiquement
       const params = new URLSearchParams({
         apiAction: 'saveCheckinWithID',
@@ -2429,6 +2843,7 @@ async function saveCheckinAll() {
         date: new Date().toLocaleDateString('en-GB'),
         spreadsheetId: item.spreadsheetId || '',
         sourceRow: String(item.sourceRow || ''),
+        sheetName: selectedSheet || '', //
         sessionId: finalSessionId
       });
 
@@ -2465,6 +2880,25 @@ function goBackToNames() {
 // ====================================
 // 📤 CHECK OUT
 // ====================================
+function toggleSheet(choice) {
+  const slider = document.getElementById('slider-highlight');
+  const btnCol = document.getElementById('btn-col');
+  const btnProd = document.getElementById('btn-prod');
+  const input = document.getElementById('selected-sheet-input');
+
+  if (choice === 'Production') {
+    slider.style.transform = 'translateX(100%)';
+    btnProd.style.color = '#ffffff'; // Texte blanc sur fond noir
+    btnCol.style.color = '#64748b';  // Texte gris sur fond clair
+    input.value = 'Production';
+  } else {
+    slider.style.transform = 'translateX(0)';
+    btnCol.style.color = '#ffffff'; // Texte blanc sur fond noir
+    btnProd.style.color = '#64748b'; // Texte gris sur fond clair
+    input.value = 'Sheet1';
+  }
+}
+
 function goToCheckOut() {
   const today = new Date().toLocaleDateString('en-GB');
   document.getElementById('checkout-date-display').textContent = today;
@@ -2540,26 +2974,32 @@ async function onCheckoutScan(decodedText) {
     const params = new URLSearchParams(url.search);
     const spreadsheetId = params.get('id');
     const row = params.get('row');
-    
+
+    // 🎯 ON RÉCUPÈRE LA FEUILLE CHOISIE SUR L'APP (Bouton Collection/Production)
+    const selectedSheet = document.getElementById('selected-sheet-input').value;
+    console.log("Feuille sélectionnée avant envoi:", selectedSheet);
     if (spreadsheetId && row) {
       scanCooldown = true;
       if (navigator.vibrate) navigator.vibrate(200);
-      await fetchCheckoutItem(spreadsheetId, row);
+      await fetchCheckoutItem(spreadsheetId, row, selectedSheet);
       setTimeout(() => { scanCooldown = false; }, 800);
     } else {
-      alert('Invalid QR code');
+      alert('Invalid QR code test');
     }
-  } catch (e) {
+  } catch (err) { // 💡 Changé 'e' en 'err' pour être cohérent
     scanCooldown = false;
-    alert('Invalid QR code');
+    console.error("Erreur de scan:", err);
+    alert('Erreur: ' + err.message); // 💡 Utilisation de 'err' défini juste au-dessus
   }
 }
 
-async function fetchCheckoutItem(spreadsheetId, row) {
-  showLoader('Loading...');
-  
+async function fetchCheckoutItem(spreadsheetId, row, selectedSheet) {
+  showLoader('search in ' + selectedSheet + '...');
+  // showLoader('Loading...');
+  // const selectedSheet = document.getElementById('selected-sheet-input').value;
   try {
-    const url = `${API_URL}?apiAction=getItem&id=${spreadsheetId}&row=${row}`;
+    console.log("Appel API pour la feuille:", selectedSheet);
+    const url = `${API_URL}?apiAction=getItem&id=${spreadsheetId}&row=${row}&sheetName=${encodeURIComponent(selectedSheet)}`;
     const response = await fetch(url);
     const result = await response.json();
     hideLoader();
@@ -2578,18 +3018,21 @@ async function fetchCheckoutItem(spreadsheetId, row) {
   }
 }
 
+
+
 async function searchCheckoutItem() {
   const sNumber = document.getElementById('checkout-search-input').value.trim();
-  
+  const selectedSheet = document.getElementById('selected-sheet-input').value;
   if (!sNumber) {
     alert('Please enter S-Number');
     return;
   }
+
   
   showLoader('Searching...');
   
   try {
-    const url = `${API_URL}?apiAction=getItemBySNumber&spreadsheetId=${ARCHIVING_SPREADSHEET_ID}&sNumber=${encodeURIComponent(sNumber)}`;
+    const url = `${API_URL}?apiAction=getItemBySNumber&spreadsheetId=${ARCHIVING_SPREADSHEET_ID}&sNumber=${encodeURIComponent(sNumber)}&sheetName=${selectedSheet}`;
     const response = await fetch(url);
     const result = await response.json();
     hideLoader();
@@ -2694,14 +3137,22 @@ async function saveCheckoutAll() {
   }
   
   showLoader('Saving...');
-  
+  console.table(checkoutItems);
   try {
     let finalSessionId = '';
     let successCount = 0;
-    
+
     for (let i = 0; i < checkoutItems.length; i++) {
       const item = checkoutItems[i];
       
+      console.log(`🔎 Analyse Item ${i + 1}:`, {
+        reference: item.reference,
+        sNumber: item.sNumber,
+        sheet: item.sheetName,    // <-- Vérifier si c'est bien "Production" ou "Sheet1"
+        row: item.sourceRow,      // <-- Vérifier si le numéro de ligne est correct
+        dbId: item.spreadsheetId
+      });
+
       const params = new URLSearchParams({
         apiAction: 'saveItemWithID',
         reference: item.reference || '',
@@ -2714,6 +3165,7 @@ async function saveCheckoutAll() {
         filename: item.filename || '',
         totalQty: String(item.totalQty || ''),
         sourceRow: String(item.sourceRow || ''),
+        sheetName: item.sheetName || '',
         spreadsheetId: item.spreadsheetId || '',
         type: checkoutFormData.type,
         name: checkoutFormData.name,
@@ -2727,6 +3179,8 @@ async function saveCheckoutAll() {
       const response = await fetch(url);
       const result = await response.json();
       
+      console.log(`✅ Réponse Serveur [Item ${i+1}]:`, result);
+
       if (result.error) {
         hideLoader();
         alert('Error saving item ' + (i+1) + ': ' + result.error);
@@ -2746,11 +3200,11 @@ async function saveCheckoutAll() {
     checkoutItems = [];
     updateCheckoutList(); // ✅ Rafraîchir l'affichage
     
-    stopCheckoutScan();
+    // stopCheckoutScan();
     
     alert(`Done✅`);
     
-    goHome();
+    // goHome();
     
   } catch (error) {
     hideLoader();
@@ -2762,6 +3216,24 @@ async function saveCheckoutAll() {
 // ====================================
 // 📊 DETAILS (✅ NOUVEAU)
 // ====================================
+function toggleSheet3(choice) {
+  const slider = document.getElementById('slider-highlight3');
+  const btnCol = document.getElementById('btn-col3');
+  const btnProd = document.getElementById('btn-prod3');
+  const input3 = document.getElementById('selected-sheet-input3');
+
+  if (choice === 'Production') {
+    slider.style.transform = 'translateX(100%)';
+    btnProd.style.color = '#ffffff'; // Texte blanc sur fond noir
+    btnCol.style.color = '#64748b';  // Texte gris sur fond clair
+    input3.value = 'Production';
+  } else {
+    slider.style.transform = 'translateX(0)';
+    btnCol.style.color = '#ffffff'; // Texte blanc sur fond noir
+    btnProd.style.color = '#64748b'; // Texte gris sur fond clair
+    input3.value = 'Sheet1';
+  }
+}
 function goToDetails() {
   showScreen('details-scan-screen');
   startDetailsScan();
@@ -2802,10 +3274,11 @@ async function onDetailsScan(decodedText) {
     const spreadsheetId = params.get('id');
     const row = params.get('row');
     
+    const selectedSheet = document.getElementById('selected-sheet-input3').value;
     if (spreadsheetId && row) {
       scanCooldown = true;
       if (navigator.vibrate) navigator.vibrate(200);
-      await fetchDetailsData(spreadsheetId, row);
+      await fetchDetailsData(spreadsheetId, row, selectedSheet);
       setTimeout(() => { scanCooldown = false; }, 800);
     } else {
       alert('Invalid QR code');
@@ -2818,7 +3291,7 @@ async function onDetailsScan(decodedText) {
 
 async function searchDetailsItem() {
   const sNumber = document.getElementById('details-search-input').value.trim();
-  
+  const selectedSheet = document.getElementById('selected-sheet-input3').value;
   if (!sNumber) {
     alert('Please enter S-Number');
     return;
@@ -2827,7 +3300,7 @@ async function searchDetailsItem() {
   showLoader('Searching...');
   
   try {
-    const url = `${API_URL}?apiAction=getItemBySNumber&spreadsheetId=${ARCHIVING_SPREADSHEET_ID}&sNumber=${encodeURIComponent(sNumber)}`;
+    const url = `${API_URL}?apiAction=getItemBySNumber&spreadsheetId=${ARCHIVING_SPREADSHEET_ID}&sNumber=${encodeURIComponent(sNumber)}&sheetName=${selectedSheet}`;
     const response = await fetch(url);
     const result = await response.json();
     hideLoader();
@@ -2841,7 +3314,7 @@ async function searchDetailsItem() {
       currentDetailsData = result.data;
       document.getElementById('details-search-input').value = '';
       
-      await loadDetailsHistory(result.data.spreadsheetId, result.data.sourceRow);
+      await loadDetailsHistory(result.data.spreadsheetId, result.data.sourceRow, selectedSheet);
       await loadDetailsSelection(result.data.sNumber); // 🔥 AJOUT
       renderDetailsView();
       stopDetailsScan();
@@ -2853,11 +3326,11 @@ async function searchDetailsItem() {
   }
 }
 
-async function fetchDetailsData(spreadsheetId, row) {
+async function fetchDetailsData(spreadsheetId, row, selectedSheet) {
   showLoader('Loading...');
   
   try {
-    const url = `${API_URL}?apiAction=getItem&id=${spreadsheetId}&row=${row}`;
+    const url = `${API_URL}?apiAction=getItem&id=${spreadsheetId}&row=${row}&sheetName=${encodeURIComponent(selectedSheet)}`;
     const response = await fetch(url);
     const result = await response.json();
     hideLoader();
@@ -2870,7 +3343,7 @@ async function fetchDetailsData(spreadsheetId, row) {
     if (result.success && result.data) {
       currentDetailsData = result.data;
       
-      await loadDetailsHistory(spreadsheetId, row);
+      await loadDetailsHistory(spreadsheetId, row, selectedSheet);
       await loadDetailsSelection(result.data.sNumber); 
       renderDetailsView();
       stopDetailsScan();
@@ -2882,9 +3355,11 @@ async function fetchDetailsData(spreadsheetId, row) {
   }
 }
 
-async function loadDetailsHistory(spreadsheetId, row) {
+async function loadDetailsHistory(spreadsheetId, row, selectedSheet) {
+
   try {
-    const url = `${API_URL}?apiAction=getArchivingDetails&id=${spreadsheetId}&row=${row}`;
+    const url = `${API_URL}?apiAction=getArchivingDetails&id=${spreadsheetId}&row=${row}&sheetName=${encodeURIComponent(selectedSheet)}`;
+    console.log("Chargement historique pour la feuille:", selectedSheet);
     const response = await fetch(url);
     const result = await response.json();
     
@@ -2892,9 +3367,11 @@ async function loadDetailsHistory(spreadsheetId, row) {
       currentDetailsData.history = result.entries;
     }
   } catch (error) {
+    console.error("Erreur historique:", error);
   }
 }
 async function loadDetailsSelection(sNumber) {
+
   try {
     const response = await fetch(
       `${API_URL}?apiAction=getSelectionBySNumber&spreadsheetId=${ARCHIVING_SPREADSHEET_ID}&sNumber=${encodeURIComponent(sNumber)}`
@@ -2966,6 +3443,16 @@ function renderDetailsView() {
       <td style="padding: 12px 0; font-size: 14px; font-weight: 600; color: var(--black);">${row.value || 'N/A'}</td>
     </tr>
   `).join('');
+  // ✅ GESTION DU BOUTON SHAREPOINT
+  const spContainer = document.getElementById('sharepoint-container');
+  // On récupère l'url envoyée par le script
+  currentSharePointUrl = currentDetailsData.sharepointUrl || "";
+
+  if (currentSharePointUrl && currentSharePointUrl.startsWith('http')) {
+    spContainer.style.display = 'block';
+  } else {
+    spContainer.style.display = 'none';
+  }
   
   // ✅ NOUVEAU : HISTORY EN TABLEAU
   const historyContainer = document.getElementById('details-history-list');
@@ -3014,12 +3501,49 @@ function goBackToDetailsScan() {
   showScreen('details-scan-screen');
   startDetailsScan();
 }
-
+function openSharePointLink() {
+  if (currentSharePointUrl && currentSharePointUrl.startsWith('http')) {
+    window.open(currentSharePointUrl, '_blank');
+  } else {
+    alert("No SharePoint link available for this item.");
+  }
+}
 
 
 // ====================================
 // 📋 SELECTION
 // ====================================
+
+// const checkboxes = document.querySelectorAll('.step-checkbox');
+// checkboxes.forEach(cb => {
+//   cb.addEventListener('change', function() {
+//     if (this.checked) {
+//       // Décoche toutes les autres cases qui ne sont pas celle qu'on vient de cliquer
+//       checkboxes.forEach(other => {
+//         if (other !== this) other.checked = false;
+//       });
+//     }
+//   });
+// });
+function toggleSheet1(choice) {
+  const slider = document.getElementById('slider-highlight1');
+  const btnCol = document.getElementById('btn-col1');
+  const btnProd = document.getElementById('btn-prod1');
+  const inpuT = document.getElementById('selected-sheet-input1');
+
+  if (choice === 'Production') {
+    slider.style.transform = 'translateX(100%)';
+    btnProd.style.color = '#ffffff'; // Texte blanc sur fond noir
+    btnCol.style.color = '#64748b';  // Texte gris sur fond clair
+    inpuT.value = 'Production';
+  } else {
+    slider.style.transform = 'translateX(0)';
+    btnCol.style.color = '#ffffff'; // Texte blanc sur fond noir
+    btnProd.style.color = '#64748b'; // Texte gris sur fond clair
+    inpuT.value = 'Sheet1';
+  }
+}
+
 function goToSelection() {
   const today = new Date().toLocaleDateString('en-GB');
   document.getElementById('selection-date-input').value = today;
@@ -3035,13 +3559,14 @@ async function searchBySNumber() {
     alert('Please enter S-Number');
     return;
   }
-
+  const opType= document.getElementById('selected-sheet-input1').value;
+  console.log(opType);
   showLoader('Searching item...');
 
   try {
 
     const response = await fetch(
-      `${GOOGLE_APPS_SCRIPT_URL}?apiAction=getItemBySNumber&spreadsheetId=${ARCHIVING_SPREADSHEET_ID}&sNumber=${encodeURIComponent(sNumber)}`
+      `${GOOGLE_APPS_SCRIPT_URL}?apiAction=getItemBySNumber&spreadsheetId=${ARCHIVING_SPREADSHEET_ID}&sNumber=${encodeURIComponent(sNumber)}&sheetName=${opType}`
     );
 
     const result = await response.json();
@@ -3069,17 +3594,46 @@ async function searchBySNumber() {
 }
 
 
-function advanceToSelectionScan() {
+// function advanceToSelectionScan() {
   
+//   const input = document.getElementById('customer-input');
+//   const customerName = input.value.trim().toUpperCase(); 
+//   if (!customerName) {
+//     alert('Please enter customer name');
+//     return;
+//   }
+
+//   selectionFormData.customer = customerName;
+  
+//   document.getElementById("selection-form-screen").classList.remove("active");
+//   document.getElementById("selection-scan-screen").classList.add("active");
+  
+//   initSelectionScanner();
+// }
+function advanceToSelectionScan() {
   const input = document.getElementById('customer-input');
   const customerName = input.value.trim().toUpperCase(); 
+  
+  // 1. Récupérer la checkbox cochée (Collection ou Production)
+  // const selectedCheckbox = document.querySelector('.step-checkbox:checked');
+
+  // 2. Vérification du nom du client
   if (!customerName) {
     alert('Please enter customer name');
     return;
   }
 
+  // 3. Nouvelle contrainte : Vérification de la sélection obligatoire
+  // if (!selectedCheckbox) {
+  //   alert('Please select either Collection or Production');
+  //   return;
+  // }
+
+  // Enregistrement des données (on ajoute le type d'opération aux données du formulaire)
   selectionFormData.customer = customerName;
+  // selectionFormData.sheetName = selectedCheckbox.value; 
   
+  // Passage à l'écran suivant
   document.getElementById("selection-form-screen").classList.remove("active");
   document.getElementById("selection-scan-screen").classList.add("active");
   
@@ -3126,7 +3680,8 @@ async function onSelectionScanSuccess(decodedText) {
   const urlParams = new URLSearchParams(decodedText.split('?')[1]);
   const spreadsheetId = urlParams.get('id');
   const row = urlParams.get('row');
-  
+  const opType = document.getElementById('selected-sheet-input1').value;
+  console.log(opType);
   if (!spreadsheetId || !row) {
     alert('Invalid QR code');
     return;
@@ -3135,7 +3690,7 @@ async function onSelectionScanSuccess(decodedText) {
   showLoader('Loading item...');
   
   try {
-    const response = await fetch(`${GOOGLE_APPS_SCRIPT_URL}?apiAction=getItem&id=${spreadsheetId}&row=${row}`);
+    const response = await fetch(`${GOOGLE_APPS_SCRIPT_URL}?apiAction=getItem&id=${spreadsheetId}&row=${row}&sheetName=${opType}`);
     const result = await response.json();
     hideLoader();
     
@@ -3226,6 +3781,8 @@ async function generateSelectionPDF() {
 
   // 🔹 récupère le username connecté
  const username = getCurrentUsername();
+ // On récupère le type d'opération choisi au début (Collection ou Production)
+  const sheetName =  document.getElementById('selected-sheet-input1').value;
 
   // Mise à jour globale pour d'autres fonctions
   selectionFormData.customer = customerName;
@@ -3238,7 +3795,8 @@ async function generateSelectionPDF() {
       ...item,
       customer: customerName,
       date: selectionDate,
-      submittedBy: username // ✅ ajoute username
+      submittedBy: username,
+      sheetName: sheetName // ✅ ajoute 
     }));
     console.log('Données envoyées à Apps Script :', finalItems);
     // 1️⃣ Sauvegarde dans la feuille Selection
@@ -3261,7 +3819,11 @@ async function generateSelectionPDF() {
     
     if (!cacheResult.success) throw new Error('Cache error');
 
-    selectionPDFUrl = `${GOOGLE_APPS_SCRIPT_URL}?action=generateMultiPDF&cacheId=${cacheResult.cacheId}`;
+    // Cette étape va prendre 5-10 secondes (le temps que Slides crée le PDF)
+    const pdfRes = await fetch(`${GOOGLE_APPS_SCRIPT_URL}?apiAction=getFinalPDFLink&cacheId=${cacheResult.cacheId}`);
+    const pdfData = await pdfRes.json();
+    if (!pdfData.success) throw new Error(pdfData.error);
+    selectionPDFUrl = pdfData.pdfUrl;
 
     // 3️⃣ Affichage écran PDF
     hideLoader();
@@ -3300,6 +3862,8 @@ async function generateMultiItemPDF() {
 function openSelectionPDF() {
   if (selectionPDFUrl) {
     window.open(selectionPDFUrl, '_blank');
+ } else {
+    alert("Le lien n'est pas encore prêt.");
   }
 }
 function goBackToHomeFromPDF() {
@@ -3360,6 +3924,7 @@ async function loadPitchScreen() {
 
     result.items.forEach((item, index) => {
   const row = document.createElement('tr');
+  row.setAttribute('data-op-type', item.sheetName || '');
   const url = item.url || '';
   
   row.innerHTML = `
@@ -3519,6 +4084,10 @@ function applyFilters() {
   const filterRow = table.querySelector('.filters-row');
   if (!filterRow) return;
 
+  // 1. Récupération de la valeur du bouton Slide (Collection vs Production)
+  const opToggle = document.querySelector('input[name="op-filter"]:checked');
+  const opFilterValue = opToggle ? opToggle.value : 'All';
+
   const inputs = filterRow.querySelectorAll('input');
   const statusSelect = filterRow.querySelector('select');
 
@@ -3530,13 +4099,18 @@ function applyFilters() {
 
   Array.from(tbody.rows).forEach(row => {
     const cells = row.cells;
+    
+    // --- Nouvelle condition : Type d'opération (via l'attribut data-op-type) ---
+    const rowOpType = row.getAttribute('data-op-type') || '';
+    const matchOpType = (opFilterValue === 'All' || rowOpType === opFilterValue);
+
     const matchRef = !refFilter || cells[0].textContent.toLowerCase().includes(refFilter);
     const matchCustomer = !customerFilter || cells[1].textContent.toLowerCase().includes(customerFilter);
     const matchDate = !dateFilter || cells[2].textContent.toLowerCase().includes(dateFilter);
     const matchSubmittedBy = !submittedByFilter || cells[3].textContent.toLowerCase().includes(submittedByFilter);
     const matchStatus = !statusFilter || cells[4].querySelector('select')?.value === statusFilter || cells[4].textContent === statusFilter;
 
-    row.style.display = (matchRef && matchCustomer && matchDate && matchSubmittedBy && matchStatus) ? '' : 'none';
+    row.style.display = (matchOpType && matchRef && matchCustomer && matchDate && matchSubmittedBy && matchStatus) ? '' : 'none';
   });
 }
 
@@ -3619,7 +4193,6 @@ function hideLoader() {
 </script>
 </body>
 </html>
-
 
 
 
