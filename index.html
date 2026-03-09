@@ -3288,10 +3288,10 @@ async function onDetailsScan(decodedText) {
     alert('Invalid QR code');
   }
 }
-
 async function searchDetailsItem() {
   const sNumber = document.getElementById('details-search-input').value.trim();
   const selectedSheet = document.getElementById('selected-sheet-input3').value;
+  
   if (!sNumber) {
     alert('Please enter S-Number');
     return;
@@ -3303,9 +3303,9 @@ async function searchDetailsItem() {
     const url = `${API_URL}?apiAction=getItemBySNumber&spreadsheetId=${ARCHIVING_SPREADSHEET_ID}&sNumber=${encodeURIComponent(sNumber)}&sheetName=${selectedSheet}`;
     const response = await fetch(url);
     const result = await response.json();
-    hideLoader();
     
     if (result.error) {
+      hideLoader();
       alert('S-Number not found');
       return;
     }
@@ -3314,28 +3314,33 @@ async function searchDetailsItem() {
       currentDetailsData = result.data;
       document.getElementById('details-search-input').value = '';
       
-      await loadDetailsHistory(result.data.spreadsheetId, result.data.sourceRow, selectedSheet);
-      await loadDetailsSelection(result.data.sNumber); // 🔥 AJOUT
+      // 🔥 Même optimisation ici pour paralléliser les appels restants
+      await Promise.all([
+        loadDetailsHistory(result.data.spreadsheetId, result.data.sourceRow, selectedSheet),
+        loadDetailsSelection(result.data.sNumber)
+      ]);
+      
       renderDetailsView();
       stopDetailsScan();
       showScreen('details-view-screen');
+      
+      hideLoader(); // ✅ On cache le loader à la toute fin
     }
   } catch (error) {
     hideLoader();
     alert('Connection error');
   }
 }
-
 async function fetchDetailsData(spreadsheetId, row, selectedSheet) {
-  showLoader('Loading...');
+  showLoader('Loading Item...'); // Le loader commence ici
   
   try {
     const url = `${API_URL}?apiAction=getItem&id=${spreadsheetId}&row=${row}&sheetName=${encodeURIComponent(selectedSheet)}`;
     const response = await fetch(url);
     const result = await response.json();
-    hideLoader();
     
     if (result.error) {
+      hideLoader(); 
       alert('Error: ' + result.error);
       return;
     }
@@ -3343,11 +3348,18 @@ async function fetchDetailsData(spreadsheetId, row, selectedSheet) {
     if (result.success && result.data) {
       currentDetailsData = result.data;
       
-      await loadDetailsHistory(spreadsheetId, row, selectedSheet);
-      await loadDetailsSelection(result.data.sNumber); 
+      // 🔥 OPTIMISATION : On lance l'historique et la sélection EN MÊME TEMPS
+      // Cela divise par 2 le temps d'attente
+      await Promise.all([
+        loadDetailsHistory(spreadsheetId, row, selectedSheet),
+        loadDetailsSelection(result.data.sNumber)
+      ]);
+      
       renderDetailsView();
       stopDetailsScan();
       showScreen('details-view-screen');
+      
+      hideLoader(); // ✅ Le loader s'arrête seulement quand tout est affiché
     }
   } catch (error) {
     hideLoader();
